@@ -1,14 +1,15 @@
 import * as React from "react";
-import * as ReactDOM from "react-dom";
 
-import {Component, useState} from "react";
+import { Component } from "react";
+import { getApp, getVariables,  useState } from '../kreact/hooks';
 
 export default class ClassFunctionComponent extends Component {
   render() {
+    getApp(FunctionComponent)
     return (
       <div>
         <h3>ClassFunctionComponent</h3>
-        <ClassComponent />
+        {/* <ClassComponent /> */}
         <FunctionComponent />
       </div>
     );
@@ -18,7 +19,7 @@ export default class ClassFunctionComponent extends Component {
 class ClassComponent extends Component {
   constructor(props) {
     super(props);
-    this.state = {count: 0};
+    this.state = { count: 0 };
   }
 
   componentDidMount() {
@@ -59,22 +60,28 @@ class ClassComponent extends Component {
 }
 
 function FunctionComponent(props) {
-  const [count, setCount] = useState(0);
-  const [val, setVal] = useState("");
+  const [count, setCount] = useState(12);
+  const [val, setVal] = useState();
 
   const add = () => {
-    setCount(count + 1);
+    console.log('isMount?', getVariables('isMount'));
+    setCount(count => count + 2);
   };
+  // const url = '//yapi.recruit-tool.beisen.net/mock/198/wechat-officer/InternalInfo/GetCommentForPy';
+  // const getAllData = () => {
+  //   fetch(url, {method: 'Get'}).then(res => {
+  //     return res.json();
+  //   }).then(data => {
+  //     return data.data;
+  //   })
+  // }
+  // React.useEffect(() => {
+  //  getAllData();
+  // }, [count]);
 
-  React.useEffect(() => {
-    console.log("useEffect"); //sy-log
-  });
-  // React.useLayoutEffect(() => {
-  //   console.log("useLayoutEffect"); //sy-log
-  // });
   const handleChange = e => {
     // setVal(e.target.value);
-    // e.persist();
+    console.log('isMount?', getVariables('isMount'));
     setVal(data => e.target.value);
 
     //   setData(data => ({

@@ -6,22 +6,11 @@ let workInProgressHook = null; // 当前正在处理的hooks
 
 //和组件一一对应
 const fiber = {
-  stateNode: null,
+  stateNode: App,
+  memorizedState: null
   // class 保存class的state；
   // function Comp hooks的数据 链式结构 包含顺序
-  memorizedState: null
 };
-
-export function getApp(comp) {
-  fiber.stateNode = comp;
-}
-export function getVariables(params) {
-  return {
-    fiber,
-    isMount,
-    workInProgressHook
-  }
-}
 function schedule() {
   workInProgressHook = fiber.memoizedState;
   const app = fiber.stateNode();
@@ -74,46 +63,19 @@ export function useState(initialState) {
       const action = firstUpdate.action;
       baseState = action(baseState);
       firstUpdate = firstUpdate.next;
-    } while (firstUpdate !== hook.queue.pending)
+    } while (firstUpdate !== hook.queue.pending.next)
 
-      hook.queue.pending = null;
+    hook.queue.pending = null;
   }
   hook.memoizedState = baseState;
 
   return [baseState, dispatchAction.bind(null, hook.queue)];
 }
 
-export default function FunctionComponent(props) {
-  const [count, setCount] = useState(12);
-  const [val, setVal] = useState(1);
-
-  const add = () => {
-    console.log('isMount?', getVariables('isMount'));
-    setCount(count => count + 2);
-  };
-  // const url = '//yapi.recruit-tool.beisen.net/mock/198/wechat-officer/InternalInfo/GetCommentForPy';
-  // const getAllData = () => {
-  //   fetch(url, {method: 'Get'}).then(res => {
-  //     return res.json();
-  //   }).then(data => {
-  //     return data.data;
-  //   })
-  // }
-  // React.useEffect(() => {
-  //  getAllData();
-  // }, [count]);
-
-  const handleChange = e => {
-    // setVal(e.target.value);
-    console.log('isMount?', getVariables('isMount'));
-    setVal(data => data + 1);
-
-    //   setData(data => ({
-    //     ...data,
-    //     // This crashes in React 16 and earlier:
-    //     text: e.target.value
-    //   }));
-  };
-  window.handleChange = handleChange;
-  window.add = add;
+export default function App() {
+  const [num, setNum] = useState(1);
+  return (<div>
+    <span>{num}</span>
+    <button onClick={() => setNum(a => a + 1)}>click me!</button>
+  </div>)
 }

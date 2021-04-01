@@ -1,11 +1,10 @@
 import * as React from "react";
 
-import { Component } from "react";
-import { getApp, getVariables,  useState } from '../kreact/hooks';
-
+import { Component, useState, useEffect} from "react";
+// import App, { useState } from '../freact/hooks';
 export default class ClassFunctionComponent extends Component {
   render() {
-    getApp(FunctionComponent)
+    // getApp(FunctionComponent)
     return (
       <div>
         <h3>ClassFunctionComponent</h3>
@@ -64,38 +63,35 @@ function FunctionComponent(props) {
   const [val, setVal] = useState();
 
   const add = () => {
-    console.log('isMount?', getVariables('isMount'));
     setCount(count => count + 2);
   };
-  // const url = '//yapi.recruit-tool.beisen.net/mock/198/wechat-officer/InternalInfo/GetCommentForPy';
-  // const getAllData = () => {
-  //   fetch(url, {method: 'Get'}).then(res => {
-  //     return res.json();
-  //   }).then(data => {
-  //     return data.data;
-  //   })
-  // }
-  // React.useEffect(() => {
-  //  getAllData();
-  // }, [count]);
+  const url = '//yapi.recruit-tool.beisen.net/mock/198/wechat-officer/InternalInfo/GetCommentForPy';
+  const getAllData = () => {
+    fetch(url, {method: 'Get'}).then(res => {
+      return res.json();
+    }).then(data => {
+      return data.data;
+    })
+  }
+  useEffect(() => {
+   console.log('useEffect');
+  }, [count]);
 
   const handleChange = e => {
-    // setVal(e.target.value);
-    console.log('isMount?', getVariables('isMount'));
+    setVal(e.target.value);
     setVal(data => e.target.value);
-
-    //   setData(data => ({
-    //     ...data,
-    //     // This crashes in React 16 and earlier:
-    //     text: e.target.value
-    //   }));
   };
   return (
     <div className="border">
-      <h3>FunctionComponent</h3>
-      <p>{count}</p>
-      <button onClick={add}>add</button>
-      <input type="text" value={val} onChange={handleChange} />
-    </div>
-  );
+    <h3>FunctionComponent</h3>
+    <p>{count}</p>
+    <button onClick={add}>add</button>
+    <input type="text" value={val} onChange={handleChange} />
+  </div>
+  )
+  // {
+  //   onClick() {
+  //     setCount(count+1);
+  //   }
+  // }
 }

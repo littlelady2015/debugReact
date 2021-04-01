@@ -14,9 +14,18 @@ import SetStatePage from "./pages/SetStatePage";
 // import SuspensePage from "./pages/SuspensePage";
 // import DiffPage from "./pages/DiffPage";
 import ClassFunctionComponent from "./pages/ClassFunctionComponent";
+
 // import UseReducerPage from "./pages/UseReducerPage";
 
 export default function App(props) {
+  function* countAppleSales () {
+    var saleList = [3, 7, 5];
+    for (var i = 0; i < saleList.length; i++) {
+      yield saleList[i];
+    }
+  }
+  const appleStore = countAppleSales();
+  window.appStore = appleStore;
   return (
     <div className="app">
       {/* <CommentListPage /> */}

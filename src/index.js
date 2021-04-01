@@ -2,7 +2,7 @@
 // import {Component} from "react";
 // import * as ReactDOM from "react-dom";
 
-import {React, ReactDOM, Component, useState} from "./CONST";
+import {React, ReactDOM } from "./CONST";
 
 // import React from "./kreact/";
 // import ReactDOM, {useState} from "./kreact/react-dom";

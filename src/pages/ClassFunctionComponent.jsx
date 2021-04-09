@@ -1,6 +1,4 @@
-import * as React from "react";
-
-import { Component, useState, useEffect} from "react";
+import {React, useState, useEffect, Component} from "../CONST";
 // import App, { useState } from '../freact/hooks';
 export default class ClassFunctionComponent extends Component {
   render() {
@@ -59,39 +57,49 @@ class ClassComponent extends Component {
 }
 
 function FunctionComponent(props) {
-  const [count, setCount] = useState(12);
-  const [val, setVal] = useState();
+  const [data, setData] = useState({});
+  const [val, setVal] = useState(0);
 
-  const add = () => {
-    setCount(count => count + 2);
-  };
-  const url = '//yapi.recruit-tool.beisen.net/mock/198/wechat-officer/InternalInfo/GetCommentForPy';
+  useEffect(() => {
+    getAllData();
+
+    return () => {
+      console.log('clear effect');
+    }
+  }, [val])
+  useEffect(() => {
+    getAllData();
+    getAllData();
+    return () => {
+      console.log('clear effect111');
+    }
+  }, [val]);
+  useEffect(() => {
+    getAllData();
+    getAllData();
+    getAllData();
+    return () => {
+      console.log('clear effect2222');
+    }
+  }, [val])
+  // const url = '//yapi.recruit-tool.beisen.net/mock/198/wechat-officer/InternalInfo/GetCommentForPy';
+  const url = '//localhost:8080/GetCommentForPy.json';
   const getAllData = () => {
     fetch(url, {method: 'Get'}).then(res => {
-      return res.json();
-    }).then(data => {
-      return data.data;
+      return res.json()
+    }).then(d => {
+      setData(d);
     })
   }
-  useEffect(() => {
-   console.log('useEffect');
-  }, [count]);
+  const handleClick = () => {
+    setVal(val+1)
+  }
 
-  const handleChange = e => {
-    setVal(e.target.value);
-    setVal(data => e.target.value);
-  };
   return (
-    <div className="border">
-    <h3>FunctionComponent</h3>
-    <p>{count}</p>
-    <button onClick={add}>add</button>
-    <input type="text" value={val} onChange={handleChange} />
-  </div>
+    <div>
+      <button onClick={handleClick}>点击按钮</button>
+      {data.code}
+    </div>
   )
-  // {
-  //   onClick() {
-  //     setCount(count+1);
-  //   }
-  // }
+
 }

@@ -591,7 +591,6 @@ function updateWorkInProgressHook(): Hook {
 
     const newHook: Hook = {
       memoizedState: currentHook.memoizedState,
-
       baseState: currentHook.baseState,
       baseQueue: currentHook.baseQueue,
       queue: currentHook.queue,

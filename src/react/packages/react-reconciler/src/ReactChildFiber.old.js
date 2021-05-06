@@ -1131,6 +1131,13 @@ function ChildReconciler(shouldTrackSideEffects) {
     created.return = returnFiber;
     return created;
   }
+  /** diff 算法
+   * @param {*} returnFiber
+   * @param {*} currentFirstChild
+   * @param {*} element
+   * @param {*} lanes
+   * @returns
+   */
 
   function reconcileSingleElement(
     returnFiber: Fiber,

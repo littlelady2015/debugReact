@@ -478,6 +478,7 @@ function commitLifeCycles(
           recordLayoutEffectDuration(finishedWork);
         }
       } else {
+        // 如果是有effect触发走这里
         commitHookEffectListMount(HookLayout | HookHasEffect, finishedWork);
       }
 

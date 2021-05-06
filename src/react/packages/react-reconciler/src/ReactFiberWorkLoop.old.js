@@ -2136,7 +2136,7 @@ function commitRootImpl(root, renderPriorityLevel) {
     // This commit has passive effects. Stash a reference to them. But don't
     // schedule a callback until after flushing layout work.
     rootDoesHavePassiveEffects = false;
-    rootWithPendingPassiveEffects = root;
+    rootWithPendingPassiveEffects = root; // 赋值为当前整个应用的根结点
     pendingPassiveEffectsLanes = lanes;
     pendingPassiveEffectsRenderPriority = renderPriorityLevel;
   } else {
@@ -2252,7 +2252,7 @@ function commitRootImpl(root, renderPriorityLevel) {
 
   return null;
 }
-
+// commit阶段 useEffect
 function commitBeforeMutationEffects() {
   while (nextEffect !== null) {
     const current = nextEffect.alternate;
@@ -2430,7 +2430,7 @@ function commitLayoutEffects(root: FiberRoot, committedLanes: Lanes) {
     markLayoutEffectsStopped();
   }
 }
-
+// 以一个优先级执行flushPassiveEffectsImpl
 export function flushPassiveEffects(): boolean {
   // Returns whether passive effects were flushed.
   if (pendingPassiveEffectsRenderPriority !== NoSchedulerPriority) {
@@ -2468,7 +2468,7 @@ export function enqueuePendingPassiveProfilerEffect(fiber: Fiber): void {
     }
   }
 }
-
+// useEffect销毁函数对应的数组 i effect i+1 对应的fiber
 export function enqueuePendingPassiveHookEffectMount(
   fiber: Fiber,
   effect: HookEffect,

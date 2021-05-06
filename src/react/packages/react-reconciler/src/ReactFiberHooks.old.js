@@ -48,6 +48,8 @@ import {
   Update as UpdateEffect,
   Passive as PassiveEffect,
 } from './ReactFiberFlags';
+// export const Update = /*                       */ 0b000000000000000100;
+// export const Passive = /*                      */ 0b000000001000000000;
 import {
   HasEffect as HookHasEffect,
   Layout as HookLayout,
@@ -102,7 +104,7 @@ type Update<S, A> = {|
 |};
 
 type UpdateQueue<S, A> = {|
-  pending: Update<S, A> | null,
+  pending: Update<S, A> | null, //记录的是update的链表
   dispatch: (A => mixed) | null,
   lastRenderedReducer: ((S, A) => S) | null,
   lastRenderedState: S | null,
@@ -557,6 +559,7 @@ function updateWorkInProgressHook(): Hook {
   // the dispatcher used for mounts.
   let nextCurrentHook: null | Hook;
   if (currentHook === null) {
+
     const current = currentlyRenderingFiber.alternate;
     if (current !== null) {
       nextCurrentHook = current.memoizedState;
@@ -636,8 +639,8 @@ function mountReducer<S, I, A>(
   const queue = (hook.queue = {
     pending: null,
     dispatch: null,
-    lastRenderedReducer: reducer,
-    lastRenderedState: (initialState: any),
+    lastRenderedReducer: reducer, // 处理在特定条件下的优化
+    lastRenderedState: (initialState: any), // 处理在特定条件下的优化
   });
   const dispatch: Dispatch<A> = (queue.dispatch = (dispatchAction.bind(
     null,
@@ -659,7 +662,7 @@ function updateReducer<S, I, A>(
     'Should have a queue. This is likely a bug in React. Please file an issue.',
   );
 
-  queue.lastRenderedReducer = reducer;
+  queue.lastRenderedReducer = reducer; // reducer是什么
 
   const current: Hook = (currentHook: any);
 
@@ -673,6 +676,7 @@ function updateReducer<S, I, A>(
     // We'll add them to the base queue.
     if (baseQueue !== null) {
       // Merge the pending queue and the base queue.
+      // 把panding queue合并到baseQueue上，形成一个循环链表
       const baseFirst = baseQueue.next;
       const pendingFirst = pendingQueue.next;
       baseQueue.next = pendingFirst;
@@ -1112,6 +1116,7 @@ function updateMutableSource<Source, Snapshot>(
 function mountState<S>(
   initialState: (() => S) | S,
 ): [S, Dispatch<BasicStateAction<S>>] {
+  // workInProgressHook
   const hook = mountWorkInProgressHook();
   if (typeof initialState === 'function') {
     // $FlowFixMe: Flow doesn't like mixed types
@@ -1119,7 +1124,7 @@ function mountState<S>(
   }
   hook.memoizedState = hook.baseState = initialState;
   const queue = (hook.queue = {
-    pending: null,
+    pending: null, // 指向update 链表的第一项？
     dispatch: null,
     lastRenderedReducer: basicStateReducer,
     lastRenderedState: (initialState: any),
@@ -1137,6 +1142,7 @@ function mountState<S>(
 function updateState<S>(
   initialState: (() => S) | S,
 ): [S, Dispatch<BasicStateAction<S>>] {
+  //basicStateReducer 返回action执行后后的state
   return updateReducer(basicStateReducer, (initialState: any));
 }
 
@@ -1159,6 +1165,7 @@ function pushEffect(tag, create, destroy, deps) {
   if (componentUpdateQueue === null) {
     componentUpdateQueue = createFunctionComponentUpdateQueue();
     currentlyRenderingFiber.updateQueue = (componentUpdateQueue: any);
+    // 这里形成了循环链表
     componentUpdateQueue.lastEffect = effect.next = effect;
   } else {
     const lastEffect = componentUpdateQueue.lastEffect;
@@ -1193,6 +1200,7 @@ function mountEffectImpl(fiberFlags, hookFlags, create, deps): void {
   const hook = mountWorkInProgressHook();
   const nextDeps = deps === undefined ? null : deps;
   currentlyRenderingFiber.flags |= fiberFlags;
+  // HookHasEffect 0b001
   hook.memoizedState = pushEffect(
     HookHasEffect | hookFlags,
     create,
@@ -1238,6 +1246,9 @@ function mountEffect(
       warnIfNotCurrentlyActingEffectsInDEV(currentlyRenderingFiber);
     }
   }
+  // UpdateEffect 0b000000000000000100;
+  // PassiveEffect 0b000000001000000000;
+  // HookPassive 0b100
   return mountEffectImpl(
     UpdateEffect | PassiveEffect,
     HookPassive,
@@ -1641,6 +1652,7 @@ function rerenderOpaqueIdentifier(): OpaqueIDType | void {
   return id;
 }
 
+// 执行当前的action 判断是否需要进入调度更新
 function dispatchAction<S, A>(
   fiber: Fiber,
   queue: UpdateQueue<S, A>,
@@ -1657,7 +1669,7 @@ function dispatchAction<S, A>(
   }
 
   const eventTime = requestEventTime();
-  const lane = requestUpdateLane(fiber);
+  const lane = requestUpdateLane(fiber); // 这里是做什么的
 
   const update: Update<S, A> = {
     lane,
@@ -1709,6 +1721,7 @@ function dispatchAction<S, A>(
           // it, on the update object. If the reducer hasn't changed by the
           // time we enter the render phase, then the eager state can be used
           // without calling the reducer again.
+          // state的优化逻辑
           update.eagerReducer = lastRenderedReducer;
           update.eagerState = eagerState;
           if (is(eagerState, currentState)) {

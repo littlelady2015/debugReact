@@ -1,10 +1,8 @@
-import * as React from "react";
-import * as ReactDOM from "react-dom";
-
-import {Component, useState, useEffect} from "react";
-
+import {React, useState, useEffect, Component} from "../CONST";
+// import App, { useState } from '../freact/hooks';
 export default class ClassFunctionComponent extends Component {
   render() {
+    // getApp(FunctionComponent)
     return (
       <div>
         <h3>ClassFunctionComponent</h3>
@@ -61,33 +59,49 @@ export default class ClassFunctionComponent extends Component {
 //   name: 'rachel'
 // };
 function FunctionComponent(props) {
-  const [count, setCount] = useState(0);
-  const [val, setVal] = useState("");
+  const [data, setData] = useState({});
+  const [val, setVal] = useState(0);
 
-  const add = () => {
-    setCount(count + 1);
-  };
   useEffect(() => {
-    console.log("useEffect", count); //sy-log
-  }, [count]);
-  // React.useLayoutEffect(() => {
-  //   console.log("useLayoutEffect"); //sy-log
-  // });
-  const handleChange = e => {
-    if(Math.random() > 0.1) {
-      const [test, useTest] = useState('作弊');
+    getAllData();
+
+    return () => {
+      console.log('clear effect');
     }
-    
-    // setVal(e.target.value);
-    // e.persist();
-    setVal(data => e.target.value);
-  };
+  }, [val])
+  useEffect(() => {
+    getAllData();
+    getAllData();
+    return () => {
+      console.log('clear effect111');
+    }
+  }, [val]);
+  useEffect(() => {
+    getAllData();
+    getAllData();
+    getAllData();
+    return () => {
+      console.log('clear effect2222');
+    }
+  }, [val])
+  // const url = '//yapi.recruit-tool.beisen.net/mock/198/wechat-officer/InternalInfo/GetCommentForPy';
+  const url = '//localhost:8080/GetCommentForPy.json';
+  const getAllData = () => {
+    fetch(url, {method: 'Get'}).then(res => {
+      return res.json()
+    }).then(d => {
+      setData(d);
+    })
+  }
+  const handleClick = () => {
+    setVal(val+1)
+  }
+
   return (
-    <div className="border">
-      <h3>FunctionComponent</h3>
-      <p>{count}</p>
-      <button onClick={add}>add</button>
-      <input type="text" value={val} onChange={handleChange} />
+    <div>
+      <button onClick={handleClick}>点击按钮</button>
+      {data.code}
     </div>
-  );
+  )
+
 }

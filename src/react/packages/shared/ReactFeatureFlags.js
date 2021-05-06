@@ -90,7 +90,7 @@ export const warnAboutSpreadingKeyToJSX = false;
 
 export const enableComponentStackLocations = true;
 
-export const enableNewReconciler = false;
+export const enableNewReconciler = false; // old 或者 new 是可以选择的
 
 // Errors that are thrown while unmounting (or after in the case of passive effects)
 // should bypass any error boundaries that are also unmounting (or have unmounted)

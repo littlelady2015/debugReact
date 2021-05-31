@@ -769,10 +769,10 @@ function ChildReconciler(shouldTrackSideEffects) {
   }
 
   function reconcileChildrenArray(
-    returnFiber: Fiber,
-    currentFirstChild: Fiber | null,
-    newChildren: Array<*>,
-    lanes: Lanes,
+    returnFiber: Fiber,  // 父级fiber节点
+    currentFirstChild: Fiber | null, // currentFiber 类似链表 sibling指向下一同级fiber节点
+    newChildren: Array<*>, //本次更新的jsx对象
+    lanes: Lanes, // 优先级相关
   ): Fiber | null {
     // This algorithm can't optimize by searching from both ends since we
     // don't have backpointers on fibers. I'm trying to see how far we can get

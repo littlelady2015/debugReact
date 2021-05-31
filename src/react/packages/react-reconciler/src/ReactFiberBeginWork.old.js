@@ -3079,7 +3079,8 @@ function remountFiber(
     );
   }
 }
-
+// 首次渲染 mount currentFiber
+// update diff 更新fiber
 function beginWork(
   current: Fiber | null,
   workInProgress: Fiber,
